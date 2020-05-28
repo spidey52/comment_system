@@ -1,0 +1,65 @@
+{% extends 'base.html' %} 
+
+{% block title %} {{ post.title }} {% endblock title %}
+
+{% block content %}
+
+	<h1>{{ post.title }}</h1>
+	<p>
+		Published {{ post.publish }} by {{ post.author }}
+	</p>
+<p>
+	{{ post.body|safe|linebreaks }}
+</p>
+
+<hr>
+
+<!-- comment form -->
+<h3>Leave us a comment</h3>
+
+{% if new_comment %}
+<h2>Your comment has been added. </h2>
+{% else %}
+<h2>add a new comment </h2>
+<form aciton='.' method="post">
+	{% csrf_token %}
+	{{ comment_form.name.label}}: {{ comment_form.name }}	<br><br>
+	{{ comment_form.email.label}}: {{ comment_form.email }} <br><br>
+	{{ comment_form.body.label }}: {{ comment_form.body }} <br><br>
+	<input type="submit" value="Add Comment">
+</form>
+{% endif %}
+
+<!-- comment form end -->
+
+{% for comment in comments %}
+	<div>
+		{{ comment.body | linebreaks }}
+			<span> via "{{ comment.name }}" {{ comment.created|timesince }} ago.</span>
+		<div class="reply-comment">
+			{% for child in comment.child_comment %}
+			 			{{ child.body | linebreaks }}
+						<span> via "{{ child.name }}" {{ child.created|timesince }} ago.</span>
+			{% endfor %}
+			<form aciton='.' method="post">
+				{% csrf_token %}
+				{{ comment_form.name.label}}: {{ comment_form.name }}	<br><br>
+				{{ comment_form.email.label}}: {{ comment_form.email }} <br><br>
+				{{ comment_form.body.label }}: {{ comment_form.body }} <br><br>
+				<input type="hidden" name="parent_id" value="{{ comment.id }}">
+				<input type="submit" value="reply Comment">
+			</form>
+		</div >
+
+	</div>
+
+{% endfor %}
+
+<style type="text/css">
+	.reply-comment {
+		color: red;
+		margin-left: 40px;
+	}
+</style>
+
+{% endblock content %}

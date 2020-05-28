@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block  content  %}
+	
+	{% if posts %}	
+		{% for post in posts %}
+			<span>Published: {{ post.publish}} by {{ post.author }} </span>
+
+			<h2> <a href="{{ post.get_absolute_url }}">{{ post.title }}</a> </h2>
+			<span> last updated {{ post.updated }}</span>
+			<p>{{ post.body|safe|truncatewords:30|linebreaks }} </p>
+			<hr>	
+		{% endfor %}
+		<style type="text/css">
+			
+			hr {
+				margin: 20px;
+			}	
+		</style>
+
+		{% include "pagination.html" with page=page_obj%}
+	{% else %}
+		<span>there is no post here </span>
+	{% endif %}
+{% endblock content %}

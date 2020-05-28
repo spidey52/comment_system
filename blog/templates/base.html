@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title> {% block title %} comment system {% endblock title %}</title>
+	<link href="{% static 'blog/css/blog.css' %} ">
+</head>
+<body>
+	<header>
+		<nav>
+			<span><a href="/">Home</a> </span>
+		</nav>
+	</header>	
+
+	<div class="container">
+		{% block content %}
+
+		{% endblock content %}
+
+	</div>
+
+</body>
+</html>
