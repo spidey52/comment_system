@@ -21,18 +21,25 @@ def post_list(request):
 
 	return render(request, 'blog/post-list.html', {'posts': posts})	
 
-def post_share(request, post_id):
-	post = get_object_or_404(Post, id=post_id, status='published')
-	if request.method == 'POST':
-		form = EmailPostForm(request.POST)
-		if form.is_valid():
-			cd = form.cleaned_data
-			# send email
-	else:
-		form = EmailPostForm()
-	return render(request, 'blog/share.html', {'post': post, 'form': form})
+# def post_share(request, post_id):
+# 	post = get_object_or_404(Post, id=post_id, status='published')
+# 	if request.method == 'POST':
+# 		form = EmailPostForm(request.POST)
+# 		if form.is_valid():
+# 			cd = form.cleaned_data
+# 			# send email
+# 	else:
+# 		form = EmailPostForm()
+# 	return render(request, 'blog/share.html', {'post': post, 'form': form})
 
-
+def test_one(request):
+	data = {
+		"name": 'satyam kumar',
+		'age': 23,
+		'github': 'spidey52',
+		"form": CommentForm()
+	}	
+	return render(request, 'blog/test.html', data)
 
 class PostListView(ListView):
 	queryset = Post.published.all()

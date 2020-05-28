@@ -14,13 +14,35 @@
 
 <hr>
 
+
+<h2> {{ comments.count }} Comment{{comments.count|pluralize }} </h2>
+
+{% for comment in comments %}
+	<div class='comment-box'>
+		{{ comment.body | linebreaks }}
+		<div class='comment-author'> via "{{ comment.name }}" {{ comment.created|timesince }} ago.
+			<a href="#" id="reply-btn">reply</a>
+		</div>
+		<div class='hidden comment-reply'>
+			{% for child in comment.child_comment %}
+			 			{{ child.body | linebreaks }}
+						<span> via "{{ child.name }}" {{ child.created|timesince }} ago.</span>
+				{% endfor %}
+					<form aciton='.' method="post">
+						{% csrf_token %}
+						{{ comment_form.name.label}}: {{ comment_form.name }}	<br><br>
+						{{ comment_form.email.label}}: {{ comment_form.email }} <br><br>
+						{{ comment_form.body.label }}: {{ comment_form.body }} <br><br>
+						<input type="hidden" name="parent_id" value="{{ comment.id }}">
+						<input type="submit" value="reply Comment">
+					</form>
+			</div >
+	</div>
+{% endfor %}
+
 <!-- comment form -->
 <h3>Leave us a comment</h3>
 
-{% if new_comment %}
-<h2>Your comment has been added. </h2>
-{% else %}
-<h2>add a new comment </h2>
 <form aciton='.' method="post">
 	{% csrf_token %}
 	{{ comment_form.name.label}}: {{ comment_form.name }}	<br><br>
@@ -28,37 +50,40 @@
 	{{ comment_form.body.label }}: {{ comment_form.body }} <br><br>
 	<input type="submit" value="Add Comment">
 </form>
-{% endif %}
 
 <!-- comment form end -->
 
-{% for comment in comments %}
-	<div>
-		{{ comment.body | linebreaks }}
-			<span> via "{{ comment.name }}" {{ comment.created|timesince }} ago.</span>
-		<div class="reply-comment">
-			{% for child in comment.child_comment %}
-			 			{{ child.body | linebreaks }}
-						<span> via "{{ child.name }}" {{ child.created|timesince }} ago.</span>
-			{% endfor %}
-			<form aciton='.' method="post">
-				{% csrf_token %}
-				{{ comment_form.name.label}}: {{ comment_form.name }}	<br><br>
-				{{ comment_form.email.label}}: {{ comment_form.email }} <br><br>
-				{{ comment_form.body.label }}: {{ comment_form.body }} <br><br>
-				<input type="hidden" name="parent_id" value="{{ comment.id }}">
-				<input type="submit" value="reply Comment">
-			</form>
-		</div >
 
-	</div>
-
-{% endfor %}
+<script type="text/javascript">
+	const reply_btn = document.querySelectorAll('#reply-btn')
+	reply_btn.forEach(function (btn) {
+		btn.addEventListener('click', function (e) {
+			e.preventDefault()
+			this.parentElement.nextElementSibling.classList.toggle('hidden')
+		})
+	})
+</script>
 
 <style type="text/css">
-	.reply-comment {
+	.comment-reply {
 		color: red;
 		margin-left: 40px;
+		transition: all 2s ease-out;
+	}
+	.comment-author {
+		font-size: 0.8em;
+		color: gray;
+		margin-left: 10px;
+	}
+	.comment-box {
+		border: 4px solid lightblue;
+		margin: 5px 2px;
+		padding: 2px 4px;
+	}
+
+	.hidden {
+		display: none;
+		transition: all 2s ease-out;
 	}
 </style>
 
